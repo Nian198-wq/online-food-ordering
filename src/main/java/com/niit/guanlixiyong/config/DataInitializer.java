@@ -13,13 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.Resource;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -95,8 +89,6 @@ public class DataInitializer {
                     System.out.println(">>> 菜品数据已存在，跳过初始化");
                     return;
                 }
-
-                ensureImagesDirectory();
 
                 // ==================== 热菜类 ====================
                 createDish("宫保鸡丁", "经典川菜，鸡肉鲜嫩，花生酥脆", 32.00, "热菜", "kung-pao-chicken");
@@ -236,90 +228,7 @@ public class DataInitializer {
     }
 
     private String getFoodImageUrl(String keywords) {
-        // 使用本地图片路径
-        // 从关键词中提取第一个作为文件名
         String fileName = keywords.split(",")[0] + ".jpg";
-        String localPath = "/images/" + fileName;
-        
-        // 如果本地图片不存在，则从网络下载
-        downloadImageIfNeeded(keywords, fileName);
-        
-        return localPath;
-    }
-    
-    /**
-     * 确保 images 目录存在
-     */
-    private void ensureImagesDirectory() {
-        try {
-            Path imagesDir = Paths.get("src/main/resources/static/images");
-            if (!Files.exists(imagesDir)) {
-                Files.createDirectories(imagesDir);
-                System.out.println(">>> 创建 images 目录: " + imagesDir.toAbsolutePath());
-            }
-        } catch (Exception e) {
-            System.err.println(">>> 创建 images 目录失败: " + e.getMessage());
-        }
-    }
-    
-    /**
-     * 如果需要则下载图片
-     */
-    private void downloadImageIfNeeded(String keywords, String fileName) {
-        Path imagePath = Paths.get("src/main/resources/static/images/" + fileName);
-        
-        // 如果图片已存在，跳过下载
-        if (Files.exists(imagePath)) {
-            System.out.println(">>> 图片已存在，跳过下载: " + fileName);
-            return;
-        }
-        
-        try {
-            System.out.println(">>> 开始下载图片: " + fileName);
-            
-            // 使用 Picsum Photos 服务（更稳定）
-            // 为每个菜品使用固定的图片ID，确保图片一致性
-            String imageUrl = "https://picsum.photos/seed/" + fileName.replace(".jpg", "") + "/400/300";
-            
-            URL url = new URL(imageUrl);
-            java.net.HttpURLConnection connection = (java.net.HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
-            connection.setConnectTimeout(15000);
-            connection.setReadTimeout(15000);
-            connection.setInstanceFollowRedirects(true);
-            
-            int responseCode = connection.getResponseCode();
-            if (responseCode == 200) {
-                try (InputStream in = connection.getInputStream();
-                     FileOutputStream out = new FileOutputStream(imagePath.toFile())) {
-                    
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-                    int totalBytes = 0;
-                    while ((bytesRead = in.read(buffer)) != -1) {
-                        out.write(buffer, 0, bytesRead);
-                        totalBytes += bytesRead;
-                    }
-                    
-                    // 验证文件大小（至少 5KB）
-                    if (totalBytes > 5000) {
-                        System.out.println(">>> ✓ 图片下载成功: " + fileName + " (" + totalBytes + " bytes)");
-                    } else {
-                        System.err.println(">>> ⚠ 警告: 图片太小可能下载失败: " + fileName + " (" + totalBytes + " bytes)");
-                        Files.deleteIfExists(imagePath);
-                    }
-                }
-            } else {
-                System.err.println(">>> ✗ 下载失败，HTTP状态码: " + responseCode + ", 文件: " + fileName);
-            }
-            
-            connection.disconnect();
-            
-            // 稍微延迟，避免请求过快
-            Thread.sleep(200);
-        } catch (Exception e) {
-            System.err.println(">>> ✗ 下载图片失败: " + fileName + ", 错误: " + e.getMessage());
-            e.printStackTrace();
-        }
+        return "/images/" + fileName;
     }
 }

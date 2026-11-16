@@ -43,9 +43,6 @@ public class OrderService {
     private DishesRepository dishesRepository;
 
     @Resource
-    private OrderItemRepository orderItemRepository;
-
-    @Resource
     private PaymentRepository paymentRepository;
 
     @Resource
