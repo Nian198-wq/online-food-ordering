@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>限时秒杀 - 在线订餐系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .navbar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .navbar-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff6b6b;
+            text-decoration: none;
+        }
+
+        .back-btn {
+            padding: 8px 20px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: #ff5252;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding-top: 80px;
+            padding-bottom: 40px;
+        }
+
+        .seckill-header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .seckill-header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .seckill-header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .seckill-item {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .seckill-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .item-image {
+            width: 200px;
+            height: 150px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .item-description {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .price-section {
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .seckill-price {
+            font-size: 32px;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .original-price {
+            font-size: 18px;
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .discount-badge {
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .item-details {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .stock-info {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        .add-cart-btn {
+            padding: 12px 30px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .add-cart-btn:hover {
+            background: #ff5252;
+        }
+
+        .add-cart-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 100px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .countdown {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-top: 10px;
+        }
+
+        .activity-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .activity-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .activity-time {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="/" class="navbar-logo">🍽️ 限时秒杀专区</a>
+            <a href="/index.html" class="back-btn"> 返回首页</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="seckill-header">
+            <h1>⚡ 限时秒杀</h1>
+            <p>超值优惠，限时抢购！手慢无！</p>
+        </div>
+
+        <div id="seckillList">
+            <div class="empty-state">
+                <div class="empty-state-icon"></div>
+                <h3>暂无秒杀活动</h3>
+                <p>秒杀活动即将开始,敬请期待！</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let seckillItems = [];
+        let countdownTimer = null;
+
+        // 加载秒杀商品
+        async function loadSeckillItems() {
+            try {
+                const response = await fetch('/api/seckill/items/ongoing');
+                seckillItems = await response.json();
+                renderSeckillItems();
+                
+                // 启动倒计时
+                if (seckillItems.length > 0) {
+                    startCountdown();
+                }
+            } catch (error) {
+                console.error('加载秒杀商品失败:', error);
+            }
+        }
+
+        // 渲染秒杀商品列表
+        function renderSeckillItems() {
+            const container = document.getElementById('seckillList');
+            
+            if (seckillItems.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon"></div>
+                        <h3>暂无秒杀活动</h3>
+                        <p>秒杀活动即将开始,敬请期待！</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = seckillItems.map(item => {
+                const discount = ((item.seckillPrice / item.originalPrice) * 10).toFixed(1);
+                const remainingStock = item.stock - item.soldStock;
+                const isSoldOut = remainingStock <= 0;
+                
+                return `
+                    <div class="seckill-item">
+                        <img src="${item.dishesImageUrl}" class="item-image" alt="${item.dishesName}" onerror="this.src='/images/default.jpg'">
+                        <div class="item-info">
+                            <div class="item-name">${item.dishesName}</div>
+                            <div class="item-description">限时特价，先到先得！</div>
+                            <div class="price-section">
+                                <span class="seckill-price">¥${item.seckillPrice.toFixed(2)}</span>
+                                <span class="original-price">¥${item.originalPrice.toFixed(2)}</span>
+                                <span class="discount-badge">${discount}折</span>
+                            </div>
+                            <div class="item-details">
+                                <span class="stock-info">库存: ${remainingStock}/${item.stock}</span>
+                                <span>每人限购: ${item.limitPerUser}件</span>
+                                <span>已售: ${item.soldStock}件</span>
+                            </div>
+                            <button class="add-cart-btn" onclick="addToCart(${item.dishesId}, '${item.dishesName}', ${item.seckillPrice})" ${isSoldOut ? 'disabled' : ''}>
+                                ${isSoldOut ? '已售罄' : ' 立即抢购'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 添加到购物车
+        function addToCart(id, name, price) {
+            // 这里简化处理，实际应该调用用户端的购物车API
+            alert(`已添加到购物车: ${name} - ¥${price.toFixed(2)}`);
+            
+            // 如果需要完整购物车功能，可以跳转到用户端主页
+            window.location.href = `/index.html#menu`;
+        }
+
+        // 倒计时
+        function startCountdown() {
+            if (countdownTimer) {
+                clearInterval(countdownTimer);
+            }
+            
+            // 这里可以添加具体的倒计时逻辑
+            // 由于后端返回的是商品列表，没有活动结束时间，暂时不做倒计时
+        }
+
+        // 页面加载
+        window.onload = function() {
+            loadSeckillItems();
+            
+            // 每30秒刷新一次
+            setInterval(loadSeckillItems, 30000);
+        };
+    </script>
+</body>
+</html>
