@@ -1,6 +1,21 @@
 # 在线订餐系统
 
+[![Java CI](https://github.com/Nian198-wq/online-food-ordering/actions/workflows/ci.yml/badge.svg)](https://github.com/Nian198-wq/online-food-ordering/actions/workflows/ci.yml)
+[![Java](https://img.shields.io/badge/Java-11-007396?logo=openjdk)](https://www.java.com/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.6.13-6DB33F?logo=springboot)](https://spring.io/projects/spring-boot)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 基于 Spring Boot、Spring Data JPA 和 H2/MySQL 的前后端一体化订餐系统。项目覆盖顾客点餐、商家订单处理、菜品管理、支付记录、配送和统计等流程，适合作为 Java 后端实习项目展示。
+
+## 界面预览
+
+![顾客端首页](docs/screenshots/customer-home.png)
+
+![商家端登录](docs/screenshots/merchant-console.png)
+
+![限时秒杀](docs/screenshots/flash-sale.png)
+
+更多模块关系和下单流程见 [架构设计](docs/architecture.md)。
 
 ## 功能
 
@@ -120,6 +135,8 @@ Content-Type: application/json
 mvn clean test
 ```
 
+GitHub Actions 会在每次推送和 Pull Request 时自动运行同一套测试。
+
 当前测试结果：共 6 个测试全部通过，其中包含 5 个订单工作流集成测试：
 
 - 正常下单与库存扣减
@@ -134,3 +151,7 @@ mvn clean test
 - 支付为演示实现，不会调用真实支付平台
 - 配送采用轮询刷新，尚未接入 WebSocket 推送
 - H2 数据在应用重启后清空，切换 MySQL 后可持久化
+
+## 许可证
+
+本项目使用 [MIT License](LICENSE)。
