@@ -11,7 +11,14 @@
 
 ![顾客端首页](docs/screenshots/customer-home.png)
 
+![商家端后台](docs/screenshots/merchant-dashboard.png)
+
+<details>
+<summary>查看商家端登录页</summary>
+
 ![商家端登录](docs/screenshots/merchant-console.png)
+
+</details>
 
 ![限时秒杀](docs/screenshots/flash-sale.png)
 
